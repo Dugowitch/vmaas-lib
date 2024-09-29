@@ -141,3 +141,14 @@ func (n *Nevra) Cmp(other *Nevra) int {
 	}
 	return n.EVRACmp(other)
 }
+
+func JoinNevra(name string, evr Evr, arch string) string {
+	if name == "" || evr.Release == "" || evr.Version == "" || arch == "" {
+		return ""
+	}
+	var epoch string
+	if evr.Epoch > 0 {
+		epoch = fmt.Sprintf("%d:", evr.Epoch)
+	}
+	return fmt.Sprintf("%s-%s%s-%s.%s", name, epoch, evr.Version, evr.Release, arch)
+}

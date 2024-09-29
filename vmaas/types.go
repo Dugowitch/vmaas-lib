@@ -45,6 +45,15 @@ type Request struct {
 	UseCsaf       bool `json:"use_csaf"`
 }
 
+type CvesRequest struct {
+	CveIDs              []string `json:"cve_list"`
+	ModifiedSince       string   `json:"modified_since"`
+	PublishedSince      string   `json:"published_since"`
+	RHOnly              bool     `json:"rh_only"`
+	AreErrataAssociated bool     `json:"errata_associated"`
+	ThirdParty          bool     `json:"third_party"`
+}
+
 type Update struct {
 	Package     string `json:"package"`
 	PackageName string `json:"package_name"`
@@ -167,23 +176,26 @@ type RepoDetail struct {
 	ThirdParty bool
 }
 
-type CveDetail struct {
-	RedHatURL     *string
-	SecondaryURL  *string
-	Cvss3Score    *string
-	Cvss3Metrics  *string
-	Impact        string
-	PublishedDate *string
-	ModifiedDate  *string
-	Iava          *string
-	Description   string
-	Cvss2Score    *string
-	Cvss2Metrics  *string
-	Source        string
+type CveDetailCommon struct {
+	Cvss2Score    *string  `json:"cvss3_score"`
+	Cvss2Metrics  *string  `json:"cvss3_metrics"`
+	Cvss3Score    *string  `json:"cvss2_score"`
+	Cvss3Metrics  *string  `json:"cvss2_metrics"`
+	CWEs          []string `json:"cwe_list"`
+	Description   string   `json:"description"`
+	Impact        string   `json:"impact"`
+	ModifiedDate  *string  `json:"modified_date"`
+	PublishedDate *string  `json:"public_date"`
+	RedHatURL     *string  `json:"redhat_url"`
+	SecondaryURL  *string  `json:"secondary_url"`
+}
 
-	CWEs      []string
+type CveDetail struct {
+	Iava      *string
+	Source    string
 	PkgIDs    []int
 	ErrataIDs []int
+	CveDetailCommon
 }
 
 type PkgErratum struct {

@@ -102,3 +102,25 @@ func TestNevraString(t *testing.T) {
 	assert.Equal(t, "0:1.3.7-1.fc27", nevra.EVRStringE(true))
 	assert.Equal(t, "1.3.7-1.fc27", nevra.EVRString())
 }
+
+func TestJoinNevra(t *testing.T) {
+	nevra1 := "firefox-1:77.0.1-1.fc33.x86_64"
+	nevra2 := "firefox-76.0.1-1.fc31.x86_64"
+	evr1 := Evr{
+		Epoch:   1,
+		Version: "77.0.1",
+		Release: "1.fc33",
+	}
+	evr2 := Evr{
+		Epoch:   0,
+		Version: "76.0.1",
+		Release: "1.fc31",
+	}
+
+	joined1 := JoinNevra("firefox", evr1, "x86_64")
+	joined2 := JoinNevra("firefox", evr2, "x86_64")
+	joined3 := JoinNevra("firefox", Evr{}, "x86_64")
+	assert.Equal(t, nevra1, joined1)
+	assert.Equal(t, nevra2, joined2)
+	assert.Equal(t, "", joined3)
+}
