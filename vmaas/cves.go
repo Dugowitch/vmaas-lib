@@ -24,6 +24,7 @@ type CveProperties struct {
 type Cves struct {
 	Cves       CvePropertiesMap `json:"cve_list"`
 	LastChange string           `json:"last_change"`
+	utils.PaginationDetails
 }
 
 func (c *Cache) pkgDetail2Nevra(pkgDetail PackageDetail) string {
@@ -140,13 +141,14 @@ func (req *CvesRequest) cves(c *Cache) (*Cves, error) { // TODO: implement opts
 	}
 
 	cveIDs = filterCveIDs(cveIDs, req, c.CveDetail)
-	// TODO: add pagination
+	cveIDs, paginationDetails := utils.Paginate(cveIDs, req.PageNumber, req.PageSize)
 
 	// TODO: write tests for everything
 
 	res := Cves{
-		Cves:       c.loadCveProperties(cveIDs),
-		LastChange: c.DBChange.LastChange,
+		Cves:              c.loadCveProperties(cveIDs),
+		LastChange:        c.DBChange.LastChange,
+		PaginationDetails: paginationDetails,
 	}
 	return &res, nil
 }
