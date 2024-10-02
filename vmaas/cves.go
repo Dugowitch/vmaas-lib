@@ -60,12 +60,12 @@ func (c *Cache) packageIDs2Nevras(pkgIDs []int) ([]string, []string) {
 	return binPackages, sourcePackages
 }
 
-func (req *CvesRequest) getSortedCveIDs() ([]string, error) {
+func (req *CvesRequest) getSortedCveIDs(cveDetails CveDetailMap) ([]string, error) {
 	cveIDs := req.CveIDs
 	if len(cveIDs) == 0 {
 		return nil, errors.New("cve_list must contain at least one item")
 	}
-	// TODO: implement expanding by regex
+	cveIDs = utils.TryExpandRegexPattern(cveIDs, cveDetails)
 	slices.Sort(cveIDs)
 	return cveIDs, nil
 }
@@ -134,7 +134,7 @@ func (c *Cache) loadCveProperties(cveIDs []string) CvePropertiesMap {
 }
 
 func (req *CvesRequest) cves(c *Cache) (*Cves, error) { // TODO: implement opts
-	cveIDs, err := req.getSortedCveIDs()
+	cveIDs, err := req.getSortedCveIDs(c.CveDetail)
 	if err != nil {
 		return nil, err
 	}
